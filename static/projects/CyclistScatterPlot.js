@@ -14,112 +14,160 @@ When you are finished, click the "I've completed this challenge" button and incl
 
 You can get feedback on your project by sharing it with your friends on Facebook.*/
 
-function ScatterPlot(data, title='') {
-  const SVG_WIDTH = 1000
-  const SVG_HEIGHT = 600
+function ScatterPlot(data, options) {
+  // define useful constants
+  const VIEWBOX_WIDTH = 1000
+  const VIEWBOX_HEIGHT = 600
   const MARGIN = {
-    LEFT: 150,
-    RIGHT: 150,
-    TOP: 100,
-    BOTTOM: 150,
-  }
-  const CHART_WIDTH = SVG_WIDTH - MARGIN.LEFT - MARGIN.RIGHT
-  const CHART_HEIGHT = SVG_HEIGHT - MARGIN.TOP - MARGIN.BOTTOM
-  
-  const TITLE_FONT_SIZE = '30px'
-  
+      LEFT: 100,
+      RIGHT: 100,
+      TOP: 100,
+      BOTTOM: 100,
+    }
+  const CHART_WIDTH = VIEWBOX_WIDTH - MARGIN.LEFT - MARGIN.RIGHT
+  const CHART_HEIGHT = VIEWBOX_HEIGHT - MARGIN.TOP - MARGIN.BOTTOM
   const NUM_SAMPLES = data.length
+  const LABEL_FONT_SIZE = '25px'
+  const TITLE_FONT_SIZE = '40px'
+  const TICK_FONT_SIZE = '16px'
 
-  const svg = d3.select('.container')
+  const svg = d3.select('body')
+    .append('div')
+      .attr('class', 'container')
     .append('svg')
-    .attr('height', '100%')
-    .attr('width', '100%')
-    .attr('viewBox', `0 0 ${SVG_WIDTH} ${SVG_HEIGHT}`)
-    .attr('preserveAspectRatio', 'none')
+      .attr('height', '100%')
+      .attr('width', '100%')
+      .attr('viewBox', `0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`)
+      .attr('preserveAspectRatio', 'none')
 
-  // Add tooltip div
+  // Add Title and Subtitle
+  if (options.title) {
+    const chartTitle = svg.append('g')
+      .attr('transform', `translate(${VIEWBOX_WIDTH / 2} ${MARGIN.TOP / 2})`)
+      chartTitle.append('text')
+      .text(options.title)
+      .style('text-anchor', 'middle')
+      .style('font-size', TITLE_FONT_SIZE)
+      
+    if (options.subtitle) {
+      chartTitle.append('text')
+        .text(options.subtitle)
+        .style('text-anchor', 'middle')
+        .style('font-size', LABEL_FONT_SIZE)
+        .attr('transform', `translate(0 40)`)
+        
+    }
+  }
+  
+  // Add tooltip container
   const tooltip = d3.select('body')
     .append('div')
-    .attr('class', 'tooltip')
-    .style('opacity', 0)
+      .attr('class', 'tooltip')
+      .style('opacity', 0)
 
-  // Add axes
+  // Add Y Axis
   const scaleY = d3.scaleLinear()
-    .domain([0, d3.max(data, d => d.Place)])
+    .domain([0, d3.max(data, d => d.Place) + 2])
     .range([0, CHART_HEIGHT])
-
-  // Reduce X values by the minimum time
-  const MIN_X = d3.min(data, d => d.Seconds)
-  const domainX = [
-    data[0].Seconds - MIN_X,
-    data[34].Seconds + 20 - MIN_X
-  ]
-  const scaleX = d3.scaleLinear()
-    .domain(domainX.reverse())
-    .range([0, CHART_WIDTH])
-
   const yAxis = d3.axisLeft(scaleY)
-  const xAxis = d3.axisBottom(scaleX)
-  xAxis.tickFormat( seconds => `${Math.floor(seconds/60)}:${seconds%60}`)
 
   svg.append('g')
       .attr('transform', `translate(${MARGIN.LEFT}, ${MARGIN.TOP})`)
       .classed('y-axis', true)
     .call(yAxis)
     .selectAll('text')
-    .attr('font-size', '16px')
+      .attr('transform', 'translate(-5 0)')
+      .attr('font-size', TICK_FONT_SIZE)
+  
+  if (options.labelY) {
+    svg.append('text')
+      .text(options.labelY)
+      .attr('text-anchor', 'middle')
+      .attr('transform', `translate(${MARGIN.LEFT / 2} ${VIEWBOX_HEIGHT / 2}) rotate(-90)`)
+      .style('font-size', LABEL_FONT_SIZE)
+  }
+
+  // Add X axis
+  const scaleX = d3.scaleLinear()
+    .domain([d3.max(data, d => d.Seconds) + 40, 0])
+    .range([0, CHART_WIDTH])
+  const xAxis = d3.axisBottom(scaleX)
+  xAxis.tickFormat( seconds => `${Math.floor(seconds/60)}:${seconds%60}`)
 
   svg.append('g')
-      .attr('transform', `translate(${MARGIN.LEFT}, ${SVG_HEIGHT - MARGIN.BOTTOM})`)
+      .attr('transform', `translate(${MARGIN.LEFT}, ${VIEWBOX_HEIGHT - MARGIN.BOTTOM})`)
       .classed('x-axis', true)
     .call(xAxis)
     .selectAll('text')
-      .attr('font-size', '16px')
-      .attr('transform', 'rotate(-30deg)')
-      // .style('text-anchor', 'end')
+      .attr('transform', 'translate(0 5)')
+      .attr('font-size', TICK_FONT_SIZE)
 
-  // add bars
-  const bars = svg.append('g')
+  if (options.labelX) {
+    svg.append('text')
+      .text(options.labelX)
+      .attr('text-anchor', 'middle')
+      .attr('dominant-baseline', 'hanging')
+      .attr('transform', `translate(${VIEWBOX_WIDTH / 2} ${VIEWBOX_HEIGHT - (MARGIN.BOTTOM / 2)})`)
+      .style('font-size', LABEL_FONT_SIZE)
+  }
+
+  // Add <g> tags to act as anchors for data points
+  const points = svg.append('g')
       .attr('id', 'points')
       .attr('transform', `translate(${MARGIN.LEFT} ${MARGIN.TOP})`)
-    .selectAll('circle')
+    .selectAll('g')
     .data(data)
     .enter()
-      .append('circle')
-      .attr('cx', d => scaleX(d.Seconds - MIN_X))
-      .attr('cy', d => scaleY(d.Place))
-      .attr('r', 5)
-      .attr('fill', d => d.Doping)
-      .on('mouseover', (d) => {
-        tooltip.transition()
-          .duration(150)
-          .style('opacity', .9)
-        tooltip.html(
-          `<p>$ Billion</p>
-          <p>Tooltip stuff</p>`
-        )	
-        .style('left', `${d3.event.pageX - 50}px`)
-        .style('top', `${d3.event.pageY - 100}px`)
-      })
-      .on('mouseout', function(d) {		
-        tooltip.transition()		
-            .duration(100)		
-            .style('opacity', 0)
-      })
-  
-  // Add Title
-  const chartTitle = svg.append('text')
-    .text(title)
-    .attr('id', 'chart-title')
-    .attr('fill', 'black')
-    .attr('transform', `translate(${MARGIN.LEFT + 100} ${MARGIN.TOP})`)
-    .attr('font-size', TITLE_FONT_SIZE);
+      .append('g')
+        .attr('transform', d => `translate(${scaleX(d.Seconds)} ${scaleY(d.Place)})`)
+        .on('mouseover', (d) => {
+          tooltip.transition()
+            .duration(150)
+            .style('opacity', .9)
+          tooltip.html(
+            `<span>${d.Name}: ${d.Nationality}</span><br/>
+            <span>Year: ${d.Year}</span>
+            <span>Time: ${d.Time}</span><br/><br/>
+            <span>${d.Doping}</span>`
+          )	
+          .style('left', `${d3.event.pageX - 200}px`)
+          .style('top', `${d3.event.pageY - 50}px`)
+        })
+        .on('mouseout', function(d) {		
+          tooltip.transition()		
+              .duration(100)		
+              .style('opacity', 0)
+        })
+        
+  points.append('circle')
+    .attr('cx', 0)
+    .attr('cy', 0)
+    .attr('r', 5)
+    .attr('fill', d => d.Doping ? 'black' : 'white')       
+  points.append('text')
+    .attr('transform', 'translate(15 4)')
+    .text(d => d.Name)
+    .attr('font-size', '12px')
+    
 }
 
-(async () => {
-  const data = await fetch('static/data/cyclist-data.json').then(r => r.json())
-  ScatterPlot(
-    data,
-    'Doping in Professional Bike Racing'
-  )
-})()
+
+// load the dataset and render the plot
+d3.json('static/data/cyclist-data.json', (err, data) => {
+    if (err) {
+      console.error("Error loading the data")
+      return
+    }
+
+    const data_final = data.map(d => ({
+      ...d,
+      Seconds: d.Seconds - data[0].Seconds
+    }))
+    requestAnimationFrame(() => ScatterPlot(data_final, {
+      title:'Doping in Professional Bicycle Racing',
+      subtitle: "Top 35 times up Alpe d'Huez",
+      labelY: 'Place',
+      labelX: 'Minutes Behind Fastest Time',
+    }))
+  }
+)
