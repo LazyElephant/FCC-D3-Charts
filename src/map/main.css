@@ -1,0 +1,42 @@
+:root {
+  --box-shadow: 0px 0px 20px -4px black;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: darkslategray;
+  position: relative;
+  margin: 0;
+  padding: 0;
+
+  min-height: 100vh;
+  min-width: 100vw;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  width: 90vw;
+  height: 90vh;
+  max-height: 50vw;
+  max-width: 200vh;
+  overflow: hidden;
+
+  background-color: darkslateblue;
+  box-shadow: var(--box-shadow);
+}
+
+.tooltip {
+  position: absolute;
+  padding: 10px;
+  max-width: 200px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.9);
+  box-shadow: var(--box-shadow);
+  pointer-events: none;
+}
