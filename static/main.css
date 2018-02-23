@@ -21,23 +21,22 @@ body {
   flex-direction: column;
 }
 
-rect {
-  stroke-width: 2;
-}
-
 text {
   fill: black;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 
 .container {
-  width: 90vw;
-  height: 60vw;
-  max-width: 1400px;
-  max-height: 800px;
+  position: relative;
+  width: 1000px;
+  height: 1000px;
 
   background-color: white;
   box-shadow: var(--box-shadow);
+}
+
+.flag {
+  position: absolute;
 }
 
 .tooltip {
