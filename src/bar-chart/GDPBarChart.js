@@ -11,13 +11,15 @@ function BarChart(json, title='') {
   const CHART_HEIGHT = SVG_HEIGHT - MARGIN.TOP - MARGIN.BOTTOM
   
   const TITLE_FONT_SIZE = '30px'
-  
+  console.log(json)
   const data = json.data
   const NUM_SAMPLES = data.length
   const MAX_Y = d3.max(data, d => d[1])
   const BAR_WIDTH = Math.floor(CHART_WIDTH / NUM_SAMPLES)
 
-  const svg = d3.select('.container')
+  const svg = d3.select('body')
+    .append('div')
+    .attr('class', 'container')
     .append('svg')
     .attr('height', '100%')
     .attr('width', '100%')
@@ -101,7 +103,7 @@ function BarChart(json, title='') {
 
 
 (async () => {
-  const data = await fetch('https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json').then(r => r.json)
+  const data = await fetch('GDP-data.json').then(r => r.json())
   BarChart(
     data,
     'Quarterly Gross Domestic Product (in billions of $)'

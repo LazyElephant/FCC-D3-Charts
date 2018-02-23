@@ -1,0 +1,66 @@
+:root {
+  --box-shadow: 0px 0px 20px -4px black;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: white url("https://res.cloudinary.com/lazy-elephant/image/upload/v1519324843/doping_txwhvk.jpg") center/cover no-repeat;
+  position: relative;
+  margin: 0;
+  padding: 0;
+
+  min-height: 100vh;
+  min-width: 100vw;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+text {
+  fill: white;
+  stroke: rgba(0, 0, 0, 0.15);
+}
+
+.container {
+  width: 90vw;
+  height: 60vw;
+
+  background-color: rgba(51, 71, 71, 0.95);
+  box-shadow: var(--box-shadow);
+}
+
+.tooltip {
+  position: absolute;
+  padding: 20px;
+  max-width: 200px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.9);
+  box-shadow: var(--box-shadow);
+  pointer-events: none;
+}
+
+@media only screen and (min-width: 750px) {
+  .container {
+    width: 750px;
+    height: 500px;
+  }
+}
+
+@media only screen and (min-width: 1000px) {
+  .container {
+    width: 1000px;
+    height: 666px;
+  }
+}
+
+@media only screen and (min-width: 1250px) {
+  .container {
+    width: 1250px;
+    height: 850px;
+  }
+}

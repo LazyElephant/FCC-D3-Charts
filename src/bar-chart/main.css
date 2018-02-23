@@ -1,0 +1,48 @@
+:root {
+  --box-shadow: 0px 0px 20px -4px black;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  background-color: teal;
+
+  min-height: 100vh;
+  min-width: 100vw;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  width: 95vw;
+  height: 60vw;
+
+  background-color: white;
+  box-shadow: var(--box-shadow);
+}
+
+.tooltip {
+  position: absolute;
+  padding: 0 10px;
+  background-color: white;
+  box-shadow: var(--box-shadow);
+  pointer-events: none;
+}
+
+#bars rect:hover {
+  fill: yellowgreen;
+}
+
+@media only screen and (min-width: 1000px) {
+  .container {
+    width: 70vw;
+    height: 40vw;
+  }
+}

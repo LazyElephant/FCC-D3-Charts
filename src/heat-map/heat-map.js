@@ -172,7 +172,7 @@ function HeatMap(data) {
 
 
 // load the dataset and render the plot
-d3.json('static/data/global-temperature.json', (err, data) => {
+d3.json('global-temperature.json', (err, data) => {
     if (err) throw err
 
     const data_final = data.monthlyVariance.map(datum => ({
@@ -180,6 +180,6 @@ d3.json('static/data/global-temperature.json', (err, data) => {
       temperature: data.baseTemperature + datum.variance
     }))
 
-    requestAnimationFrame(() => HeatMap(data_final))
+    HeatMap(data_final)
   }
 )

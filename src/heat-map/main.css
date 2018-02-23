@@ -1,0 +1,51 @@
+:root {
+  --box-shadow: 0px 0px 20px -4px black;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: darkslategray;
+  position: relative;
+  margin: 0;
+  padding: 0;
+
+  min-height: 100vh;
+  min-width: 100vw;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+rect {
+  stroke-width: 2;
+}
+
+text {
+  fill: black;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.container {
+  width: 90vw;
+  height: 60vw;
+  max-width: 1400px;
+  max-height: 800px;
+
+  background-color: white;
+  box-shadow: var(--box-shadow);
+}
+
+.tooltip {
+  position: absolute;
+  padding: 20px;
+  max-width: 200px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.9);
+  box-shadow: var(--box-shadow);
+  pointer-events: none;
+}

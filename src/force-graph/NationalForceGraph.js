@@ -108,7 +108,7 @@ function ForceDirectedGraph(data) {
 
 
 // load the dataset and render the plot
-d3.json('static/data/countries.json', (err, data) => {
+d3.json('countries.json', (err, data) => {
     if (err) throw err
 
     requestAnimationFrame(() => ForceDirectedGraph(data))
